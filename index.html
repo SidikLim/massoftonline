@@ -98,6 +98,10 @@
   .btn-ghost:hover{ border-color:var(--ink); background:rgba(21,34,56,0.03); }
   .btn-wa{ background:var(--wa); color:var(--white); }
   .btn-wa:hover{ background:#187f45; transform:translateY(-1px); }
+  .btn-webinar{
+    background:var(--blue); color:var(--white); border-color:var(--blue);
+  }
+  .btn-webinar:hover{ background:var(--blue-dark); border-color:var(--blue-dark); transform:translateY(-1px); }
   .btn-ig{
     background:transparent; color:var(--ink-soft); border-color:var(--line);
     padding:11px; display:inline-flex; align-items:center; justify-content:center;
@@ -507,6 +511,54 @@
     .showcase-thumbs{ grid-template-columns:repeat(2,1fr); }
     .showcase-nav{ width:32px; height:32px; }
   }
+
+  /* ===== WEBINAR MODAL ===== */
+  .btn-webinar{
+    font-family:var(--font-body);
+    appearance:none;
+  }
+  .modal-overlay{
+    display:none;
+    position:fixed; inset:0; z-index:999;
+    background:rgba(20,28,41,0.55);
+    align-items:center; justify-content:center;
+    padding:24px;
+  }
+  .modal-overlay.open{ display:flex; }
+  .modal-box{
+    background:var(--white);
+    width:100%; max-width:640px; height:min(720px, 88vh);
+    border-radius:8px;
+    overflow:hidden;
+    display:flex; flex-direction:column;
+    box-shadow:0 30px 70px -20px rgba(0,0,0,.45);
+  }
+  .modal-head{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 20px;
+    background:var(--blue-dark); color:var(--white);
+    font-family:var(--font-display); font-size:18px; font-weight:600;
+  }
+  .modal-close{
+    background:transparent; border:none; color:var(--white);
+    font-size:26px; line-height:1; cursor:pointer; padding:0 4px;
+  }
+  .modal-fallback{
+    padding:9px 20px;
+    background:var(--blue-pale);
+    border-bottom:1px solid var(--line);
+    font-size:12.5px; color:var(--ink-soft);
+    text-align:center;
+  }
+  .modal-fallback a{ color:var(--blue-dark); font-weight:600; }
+  .modal-fallback a:hover{ text-decoration:underline; }
+  .modal-box iframe{
+    flex:1; width:100%; border:none; display:block;
+  }
+  @media (max-width:560px){
+    .modal-overlay{ padding:0; }
+    .modal-box{ max-width:100%; height:100%; border-radius:0; }
+  }
 </style>
 </head>
 <body>
@@ -548,6 +600,7 @@
         <div class="hero-cta">
           <a class="btn btn-primary" href="https://massoft.online" target="_blank" rel="noopener">Coba Gratis 6 Bulan →</a>
           <a class="btn btn-wa" href="https://wa.me/6281399366882" target="_blank" rel="noopener">Hubungi via WhatsApp</a>
+          <button type="button" class="btn btn-webinar" onclick="openWebinarModal()">Daftar Webinar Gratis</button>
         </div>
         <div class="hero-trust"><span class="dot"></span> Tanpa instal · Tanpa kartu kredit · Data tersimpan aman di cloud</div>
       </div>
@@ -868,6 +921,20 @@
   </div>
 </footer>
 
+<!-- WEBINAR REGISTRATION MODAL -->
+<div class="modal-overlay" id="webinarModal" onclick="if(event.target===this) closeWebinarModal()">
+  <div class="modal-box">
+    <div class="modal-head">
+      <span>Daftar Webinar Gratis</span>
+      <button type="button" class="modal-close" onclick="closeWebinarModal()" aria-label="Tutup">&times;</button>
+    </div>
+    <div class="modal-fallback">
+      Form tidak muncul? <a href="https://docs.google.com/forms/d/e/1FAIpQLScVEw0zVGtz0bYCMRscDXuCH5ViUbxrnJtYhzWzYlYGKrkeuQ/viewform?usp=header" target="_blank" rel="noopener">Buka di tab baru →</a>
+    </div>
+    <iframe id="webinarFormFrame" src="" title="Formulir Pendaftaran Webinar" loading="lazy"></iframe>
+  </div>
+</div>
+
 <script defer>// Reveal on scroll
   const reveals = document.querySelectorAll('.reveal');
   const io = new IntersectionObserver((entries)=>{
@@ -940,6 +1007,29 @@
   }
 
   
+
+  // Webinar registration modal
+  const WEBINAR_FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLScVEw0zVGtz0bYCMRscDXuCH5ViUbxrnJtYhzWzYlYGKrkeuQ/viewform?embedded=true";
+
+  function openWebinarModal(){
+    const modal = document.getElementById('webinarModal');
+    const frame = document.getElementById('webinarFormFrame');
+    if(!modal || !frame) return;
+    if(!frame.getAttribute('src')){ frame.setAttribute('src', WEBINAR_FORM_URL); }
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeWebinarModal(){
+    const modal = document.getElementById('webinarModal');
+    if(!modal) return;
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') closeWebinarModal();
+  });
+  window.openWebinarModal = openWebinarModal;
+  window.closeWebinarModal = closeWebinarModal;
 </script>
 
 </body>
